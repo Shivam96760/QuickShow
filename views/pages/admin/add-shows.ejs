@@ -1,0 +1,168 @@
+<div class="lg:flex">
+  <%- include('../../partials/admin-sidebar') %>
+
+  <div class="flex-1 lg:ml-64">
+    <header class="sticky top-0 z-30 bg-background/90 backdrop-blur border-b border-border">
+      <div class="flex items-center justify-between px-4 sm:px-8 h-16">
+        <h1 class="font-display text-xl font-semibold text-white">Add shows</h1>
+        <div class="w-8 h-8 rounded-full bg-card border border-border flex items-center justify-center text-xs font-semibold text-white">A</div>
+      </div>
+    </header>
+
+    <main class="p-4 sm:p-8 max-w-6xl">
+      <div class="mb-6">
+        <h2 class="font-display text-2xl font-bold text-white">Create new show slots</h2>
+        <p class="mt-1 text-sm text-muted">Pick a movie, set a price and add one or more show slots.</p>
+      </div>
+
+      <div class="space-y-6">
+        <!-- Movie selection -->
+        <div class="bg-card border border-border rounded-2xl p-5 sm:p-6">
+          <h3 class="font-display text-base font-semibold text-white">Select a movie</h3>
+          <p class="mt-1 text-xs text-muted">Click a poster to choose.</p>
+
+          <div class="mt-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+            <% movies.forEach((m, i) => { %>
+              <label class="relative cursor-pointer">
+                <input type="radio" name="movie" value="<%= m.slug || m.id %>" class="peer sr-only" <%= i === 0 ? 'checked' : '' %> />
+                <div class="aspect-[2/3] rounded-xl overflow-hidden border-2 border-border peer-checked:border-primary peer-checked:shadow-glow transition-all">
+                  <img src="<%= m.poster %>" alt="<%= m.title %>" class="w-full h-full object-cover" loading="lazy" />
+                </div>
+                <p class="mt-2 text-xs font-medium text-white truncate"><%= m.title %></p>
+              </label>
+            <% }); %>
+          </div>
+        </div>
+
+        <!-- Price + date/time -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-card border border-border rounded-2xl p-5 sm:p-6">
+            <h3 class="font-display text-base font-semibold text-white">Ticket price</h3>
+            <div class="mt-4">
+              <label class="block">
+                <span class="text-xs font-medium text-muted">Price per seat (₹)</span>
+                <div class="mt-1.5 flex items-center rounded-lg bg-surface border border-border focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/40">
+                  <span class="px-3 py-2.5 text-muted">₹</span>
+                  <input type="number" id="price-input" value="250" min="0" class="flex-1 bg-transparent px-1 py-2.5 text-sm text-white focus:outline-none" />
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="bg-card border border-border rounded-2xl p-5 sm:p-6">
+            <h3 class="font-display text-base font-semibold text-white">Add a show slot</h3>
+            <form id="slot-form" class="mt-4 grid grid-cols-1 sm:grid-cols-[1fr_1fr_auto] gap-3">
+              <label class="block">
+                <span class="text-xs font-medium text-muted">Date</span>
+                <input type="date" id="slot-date" required class="mt-1.5 w-full px-3 py-2.5 bg-surface border border-border rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary" />
+              </label>
+              <label class="block">
+                <span class="text-xs font-medium text-muted">Time</span>
+                <input type="time" id="slot-time" required class="mt-1.5 w-full px-3 py-2.5 bg-surface border border-border rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary" />
+              </label>
+              <button type="submit" class="self-end px-4 py-2.5 bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-lg transition-colors">Add</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Selected slots -->
+        <div class="bg-card border border-border rounded-2xl p-5 sm:p-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 class="font-display text-base font-semibold text-white">Selected slots</h3>
+              <p class="mt-1 text-xs text-muted">These will be created when you submit.</p>
+            </div>
+            <button type="button" id="submit-slots" class="px-4 py-2 bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-lg transition-colors">
+              Create shows
+            </button>
+          </div>
+          <ul id="slot-list" class="mt-4 flex flex-wrap gap-2"></ul>
+          <div id="slot-empty" class="mt-4 text-xs text-muted">No slots added yet.</div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script>
+  (function () {
+    const form = document.getElementById('slot-form')
+    const list = document.getElementById('slot-list')
+    const empty = document.getElementById('slot-empty')
+    const submitBtn = document.getElementById('submit-slots')
+    const slots = []
+
+    function render() {
+      list.innerHTML = slots
+        .map(
+          (s, i) => `
+          <li class="inline-flex items-center gap-2 px-3 py-2 bg-primary-soft border border-primary/30 rounded-lg text-xs text-white">
+            <span>${s.date} · ${s.time}</span>
+            <button type="button" data-idx="${i}" class="remove-slot text-primary hover:text-white" aria-label="Remove">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </li>`
+        )
+        .join('')
+      empty.classList.toggle('hidden', slots.length > 0)
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault()
+      const date = document.getElementById('slot-date').value
+      const time = document.getElementById('slot-time').value
+      if (!date || !time) return
+      slots.push({ date, time })
+      render()
+      form.reset()
+    })
+
+    list.addEventListener('click', (e) => {
+      const btn = e.target.closest('.remove-slot')
+      if (!btn) return
+      slots.splice(Number(btn.dataset.idx), 1)
+      render()
+    })
+
+    submitBtn.addEventListener('click', async () => {
+      if (slots.length === 0) {
+        alert('Add at least one show slot first.')
+        return
+      }
+
+      const movieSlug = document.querySelector('input[name="movie"]:checked')?.value
+      const price = document.getElementById('price-input')?.value
+
+      if (!movieSlug) {
+        alert('Please select a movie.')
+        return
+      }
+
+      submitBtn.disabled = true
+      submitBtn.textContent = 'Creating...'
+
+      try {
+        const res = await fetch('/api/shows', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ movieSlug, price: Number(price), slots }),
+        })
+
+        const data = await res.json()
+
+        if (res.ok && data.success) {
+          alert(data.message)
+          slots.length = 0
+          render()
+        } else {
+          alert(data.error || 'Failed to create shows.')
+        }
+      } catch (err) {
+        alert('Network error. Try again.')
+      }
+
+      submitBtn.disabled = false
+      submitBtn.textContent = 'Create shows'
+    })
+  })()
+</script>

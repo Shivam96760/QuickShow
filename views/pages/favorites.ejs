@@ -1,0 +1,44 @@
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <div class="mb-8">
+    <p class="text-xs font-medium uppercase tracking-wider text-primary mb-2">Your favorites</p>
+    <h1 class="font-display text-3xl sm:text-4xl font-bold text-white tracking-tight">Saved for later</h1>
+    <p class="mt-1 text-sm text-muted">Movies you've favorited are saved in your browser.</p>
+  </div>
+
+  <!-- Empty state -->
+  <div id="favorites-empty" class="bg-card border border-border rounded-2xl p-12 text-center">
+    <div class="w-16 h-16 mx-auto rounded-full bg-primary-soft flex items-center justify-center">
+      <svg class="w-8 h-8 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </div>
+    <h2 class="mt-4 font-display text-xl font-semibold text-white">No favorites yet</h2>
+    <p class="mt-1 text-sm text-muted">Tap the heart icon on any movie to save it here.</p>
+    <a href="/movies" class="mt-5 inline-flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-xl transition-colors">
+      Browse movies
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+    </a>
+  </div>
+
+  <div id="favorites-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6 mt-0">
+    <% movies.forEach(movie => { %>
+      <div data-fav-id="<%= movie.id %>" class="hidden">
+        <%- include('../partials/movie-card', { movie }) %>
+      </div>
+    <% }); %>
+  </div>
+</section>
+
+<script>
+  (function () {
+    const favs = window.QuickShow ? window.QuickShow.getFavorites() : []
+    const grid = document.getElementById('favorites-grid')
+    const empty = document.getElementById('favorites-empty')
+    let shown = 0
+    grid.querySelectorAll('[data-fav-id]').forEach((el) => {
+      if (favs.includes(el.dataset.favId)) {
+        el.classList.remove('hidden')
+        shown++
+      }
+    })
+    empty.classList.toggle('hidden', shown > 0)
+  })()
+</script>

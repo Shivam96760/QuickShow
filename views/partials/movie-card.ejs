@@ -1,0 +1,39 @@
+<article class="group relative bg-card border border-border rounded-2xl overflow-hidden hover:border-primary/60 transition-all duration-300">
+  <a href="/movies/<%= movie.id %>" class="block">
+    <div class="relative aspect-[2/3] overflow-hidden bg-surface">
+      <img
+        src="<%= movie.poster %>"
+        alt="<%= movie.title %> poster"
+        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+        loading="lazy"
+      />
+      <div class="absolute inset-0 bg-gradient-to-t from-background/90 via-background/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
+      <div class="absolute top-3 left-3 flex items-center gap-1 px-2 py-1 bg-background/80 backdrop-blur rounded-md text-xs font-medium text-white">
+        <svg class="w-3 h-3 text-primary" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+        <%= movie.rating %>
+      </div>
+
+      <button
+        type="button"
+        class="favorite-btn absolute top-3 right-3 w-9 h-9 rounded-full bg-background/80 backdrop-blur flex items-center justify-center text-white hover:text-primary transition-colors"
+        data-movie-id="<%= movie.id %>"
+        aria-label="Add to favorites"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+      </button>
+    </div>
+
+    <div class="p-4">
+      <h3 class="font-display font-semibold text-white truncate"><%= movie.title %></h3>
+      <p class="mt-1 text-xs text-muted truncate"><%= movie.genres.join(' · ') %></p>
+      <div class="mt-3 flex items-center justify-between">
+        <span class="text-xs text-muted"><%= movie.runtime %></span>
+        <span class="inline-flex items-center gap-1 text-xs font-medium text-primary">
+          Buy tickets
+          <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+        </span>
+      </div>
+    </div>
+  </a>
+</article>

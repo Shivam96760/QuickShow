@@ -1,0 +1,101 @@
+/* QuickShow — custom CSS layered on top of Tailwind CDN */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: radial-gradient(1200px 600px at 80% -10%, rgba(248, 69, 101, 0.12), transparent 60%),
+    radial-gradient(900px 500px at -10% 20%, rgba(248, 69, 101, 0.05), transparent 60%), #09090b;
+  background-attachment: fixed;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #09090b;
+}
+::-webkit-scrollbar-thumb {
+  background: #26262a;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a40;
+}
+
+/* Seat layout */
+.seat {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem 0.5rem 0.25rem 0.25rem;
+  background: #1f1f24;
+  border: 1px solid #2e2e34;
+  color: #8a8a93;
+  font-size: 0.65rem;
+  font-weight: 500;
+  transition: all 0.15s ease;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.seat:hover:not([disabled]) {
+  background: #2a2a30;
+  color: #fff;
+  border-color: #F84565;
+}
+.seat.selected {
+  background: #F84565;
+  border-color: #F84565;
+  color: #fff;
+  box-shadow: 0 6px 18px -6px rgba(248, 69, 101, 0.6);
+}
+.seat.occupied,
+.seat[disabled] {
+  background: #0e0e10;
+  color: #3a3a40;
+  border-color: #1a1a1e;
+  cursor: not-allowed;
+}
+
+.seat-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.seat-legend-box {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.25rem;
+  border: 1px solid #2e2e34;
+}
+
+/* Screen curve */
+.screen {
+  background: linear-gradient(180deg, rgba(248, 69, 101, 0.35), rgba(248, 69, 101, 0));
+  border-radius: 50% / 100% 100% 0 0;
+  transform: perspective(400px) rotateX(-30deg);
+  height: 3rem;
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto;
+  box-shadow: 0 10px 40px -10px rgba(248, 69, 101, 0.45);
+}
+
+/* Hide scrollbar utility */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Favorite button active */
+.favorite-btn.is-fav svg {
+  fill: #F84565;
+  stroke: #F84565;
+}

@@ -1,0 +1,123 @@
+<!-- Hero -->
+<% if (featured) { %>
+<section class="relative overflow-hidden">
+  <div class="absolute inset-0 -z-10">
+    <img
+      src="<%= featured.backdrop %>"
+      alt=""
+      class="w-full h-full object-cover opacity-40"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 sm:py-28 lg:py-36">
+    <div class="max-w-2xl">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-soft border border-primary/30 text-xs font-medium text-primary mb-6">
+        <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+        Now streaming in cinemas
+      </div>
+
+      <h1 class="font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-[1.05] tracking-tight text-balance">
+        <%= featured.title %>
+      </h1>
+
+      <p class="mt-4 text-lg text-white/80 text-pretty max-w-xl"><%= featured.tagline %></p>
+
+      <div class="mt-6 flex flex-wrap items-center gap-4 text-sm text-muted">
+        <span class="flex items-center gap-1.5">
+          <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+          <%= featured.rating %>
+        </span>
+        <span class="h-1 w-1 rounded-full bg-muted"></span>
+        <span><%= featured.runtime %></span>
+        <span class="h-1 w-1 rounded-full bg-muted"></span>
+        <span><%= featured.genres.join(' · ') %></span>
+      </div>
+
+      <p class="mt-6 text-base text-white/70 leading-relaxed max-w-xl text-pretty">
+        <%= featured.overview %>
+      </p>
+
+      <div class="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+        <a
+          href="/movies/<%= featured.id %>"
+          class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary-hover text-white font-medium rounded-xl shadow-glow transition-colors"
+        >
+          Book tickets now
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+        </a>
+        <a
+          href="#trailer"
+          class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-card/80 hover:bg-card border border-border text-white font-medium rounded-xl transition-colors"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          Watch trailer
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Now showing -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <%- include('../partials/section-title', {
+    eyebrow: 'Now showing',
+    heading: 'Trending this week',
+    subheading: 'Hand-picked movies playing in cinemas near you.',
+    link: { href: '/movies', label: 'View all' }
+  }) %>
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
+    <% movies.forEach(movie => { %>
+      <%- include('../partials/movie-card', { movie }) %>
+    <% }); %>
+  </div>
+</section>
+
+<!-- Trailer -->
+<section id="trailer" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <%- include('../partials/section-title', {
+    eyebrow: 'Official trailer',
+    heading: 'Watch the latest trailer',
+    subheading: 'Get a glimpse of the action before booking your seat.'
+  }) %>
+
+  <div class="relative rounded-2xl overflow-hidden border border-border shadow-glow">
+    <div class="aspect-video">
+      <iframe
+        class="w-full h-full"
+        src="https://www.youtube.com/embed/<%= featured.trailer %>?rel=0&modestbranding=1"
+        title="<%= featured.title %> trailer"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
+</section>
+<% } %>
+
+<!-- CTA strip -->
+<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+  <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary/90 to-primary/60 p-8 sm:p-12">
+    <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+      <div>
+        <h3 class="font-display text-2xl sm:text-3xl font-bold text-white text-balance">Never miss a premiere.</h3>
+        <p class="mt-2 text-white/90 text-sm sm:text-base max-w-lg">Get early access to bookings, exclusive previews and movie news straight to your inbox.</p>
+      </div>
+      <form class="flex w-full md:w-auto gap-2" onsubmit="event.preventDefault(); this.reset(); alert('Subscribed!');">
+        <input
+          type="email"
+          required
+          placeholder="your@email.com"
+          class="flex-1 md:w-64 px-4 py-3 rounded-xl bg-white/20 placeholder-white/70 text-white border border-white/30 focus:outline-none focus:ring-2 focus:ring-white"
+        />
+        <button type="submit" class="px-5 py-3 rounded-xl bg-background hover:bg-card text-white font-medium transition-colors">
+          Subscribe
+        </button>
+      </form>
+    </div>
+    <div class="pointer-events-none absolute -right-20 -bottom-20 w-64 h-64 rounded-full bg-white/10 blur-3xl"></div>
+  </div>
+</section>

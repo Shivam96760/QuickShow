@@ -1,0 +1,142 @@
+<section class="relative">
+  <div class="absolute inset-0 h-[420px] -z-10 overflow-hidden">
+    <img src="<%= movie.backdrop %>" alt="" class="w-full h-full object-cover opacity-30" />
+    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-background/80 to-background"></div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 lg:pt-16">
+    <div class="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 lg:gap-12">
+      <!-- Poster -->
+      <div>
+        <div class="rounded-2xl overflow-hidden border border-border shadow-glow">
+          <img src="<%= movie.poster %>" alt="<%= movie.title %> poster" class="w-full aspect-[2/3] object-cover" />
+        </div>
+        <button
+          class="favorite-btn mt-4 w-full flex items-center justify-center gap-2 px-4 py-3 bg-card border border-border rounded-xl text-white hover:border-primary/60 transition-colors"
+          data-movie-id="<%= movie.id %>"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          <span class="text-sm font-medium">Add to favorites</span>
+        </button>
+      </div>
+
+      <!-- Info -->
+      <div>
+        <p class="text-xs font-medium uppercase tracking-wider text-primary mb-2"><%= movie.year %> · Feature film</p>
+        <h1 class="font-display text-4xl sm:text-5xl font-bold text-white tracking-tight text-balance">
+          <%= movie.title %>
+        </h1>
+        <p class="mt-3 text-lg text-white/70 italic text-pretty"><%= movie.tagline %></p>
+
+        <div class="mt-6 flex flex-wrap items-center gap-4 text-sm">
+          <div class="flex items-center gap-1.5 px-3 py-1.5 bg-card border border-border rounded-lg">
+            <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.27 5.82 22 7 14.14l-5-4.87 6.91-1.01L12 2z"/></svg>
+            <span class="font-medium text-white"><%= movie.rating %></span>
+            <span class="text-muted">/ 10</span>
+          </div>
+          <span class="text-muted"><%= movie.runtime %></span>
+          <div class="flex flex-wrap gap-1.5">
+            <% movie.genres.forEach(g => { %>
+              <span class="px-2.5 py-1 text-xs bg-card border border-border rounded-md text-muted"><%= g %></span>
+            <% }); %>
+          </div>
+        </div>
+
+        <p class="mt-6 text-white/80 leading-relaxed max-w-3xl text-pretty"><%= movie.overview %></p>
+
+        <!-- Cast -->
+        <div class="mt-10">
+          <h2 class="font-display text-xl font-semibold text-white mb-4">Cast</h2>
+          <div class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+            <% movie.casts.forEach(cast => { %>
+              <div class="flex-shrink-0 w-24 text-center">
+                <div class="w-24 h-24 rounded-full overflow-hidden bg-card border border-border">
+                  <img src="<%= cast.image %>" alt="<%= cast.name %>" class="w-full h-full object-cover" loading="lazy" />
+                </div>
+                <p class="mt-2 text-xs font-medium text-white truncate"><%= cast.name %></p>
+              </div>
+            <% }); %>
+          </div>
+        </div>
+
+        <!-- Date selection -->
+        <div class="mt-10">
+          <h2 class="font-display text-xl font-semibold text-white mb-4">Choose a date</h2>
+          <div class="flex gap-3 overflow-x-auto no-scrollbar pb-2" role="tablist">
+            <% shows.forEach((show, i) => { %>
+              <button
+                type="button"
+                data-date-tab="<%= show.key %>"
+                class="date-tab flex-shrink-0 w-20 py-3 rounded-xl border text-center transition-colors <%= i === 0 ? 'bg-primary border-primary text-white' : 'bg-card border-border text-muted hover:text-white hover:border-primary/50' %>"
+                aria-pressed="<%= i === 0 ? 'true' : 'false' %>"
+              >
+                <div class="text-xs uppercase"><%= show.day %></div>
+                <div class="text-2xl font-bold mt-1"><%= show.date %></div>
+                <div class="text-xs uppercase"><%= show.month %></div>
+              </button>
+            <% }); %>
+          </div>
+        </div>
+
+        <!-- Showtimes -->
+        <div class="mt-8">
+          <h2 class="font-display text-xl font-semibold text-white mb-4">Showtimes</h2>
+          <% shows.forEach((show, i) => { %>
+            <div data-date-panel="<%= show.key %>" class="<%= i === 0 ? '' : 'hidden' %>">
+              <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                <% show.times.forEach(time => {
+                  // Use the show's MongoDB ID if available, otherwise fallback
+                  const showMongoId = show.showIds && show.showIds[time] ? show.showIds[time] : '';
+                  const href = showMongoId ? '/seats/' + showMongoId : '#';
+                %>
+                  <a
+                    href="<%= href %>"
+                    class="px-4 py-3 rounded-xl bg-card border border-border text-center text-sm font-medium text-white hover:bg-primary-soft hover:border-primary/60 hover:text-primary transition-colors <%= !showMongoId ? 'opacity-50 pointer-events-none' : '' %>"
+                  >
+                    <%= time %>
+                  </a>
+                <% }); %>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+
+        <div class="mt-10">
+          <% if (shows.length > 0 && shows[0].times.length > 0 && shows[0].showIds && shows[0].showIds[shows[0].times[0]]) { %>
+            <a href="/seats/<%= shows[0].showIds[shows[0].times[0]] %>" class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary-hover text-white font-medium rounded-xl shadow-glow transition-colors">
+              Book now
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14m-6-6 6 6-6 6"/></svg>
+            </a>
+          <% } else { %>
+            <p class="text-sm text-muted">No shows available. Check back soon!</p>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  (function () {
+    const tabs = document.querySelectorAll('.date-tab')
+    const panels = document.querySelectorAll('[data-date-panel]')
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const key = tab.dataset.dateTab
+        tabs.forEach((t) => {
+          const active = t === tab
+          t.classList.toggle('bg-primary', active)
+          t.classList.toggle('border-primary', active)
+          t.classList.toggle('text-white', active)
+          t.classList.toggle('bg-card', !active)
+          t.classList.toggle('border-border', !active)
+          t.classList.toggle('text-muted', !active)
+          t.setAttribute('aria-pressed', active ? 'true' : 'false')
+        })
+        panels.forEach((p) => {
+          p.classList.toggle('hidden', p.dataset.datePanel !== key)
+        })
+      })
+    })
+  })()
+</script>

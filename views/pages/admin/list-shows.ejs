@@ -1,0 +1,110 @@
+<div class="lg:flex">
+  <%- include('../../partials/admin-sidebar') %>
+
+  <div class="flex-1 lg:ml-64">
+    <header class="sticky top-0 z-30 bg-background/90 backdrop-blur border-b border-border">
+      <div class="flex items-center justify-between px-4 sm:px-8 h-16">
+        <h1 class="font-display text-xl font-semibold text-white">List shows</h1>
+        <div class="w-8 h-8 rounded-full bg-card border border-border flex items-center justify-center text-xs font-semibold text-white">A</div>
+      </div>
+    </header>
+
+    <main class="p-4 sm:p-8">
+      <div class="mb-6 flex items-end justify-between flex-wrap gap-4">
+        <div>
+          <h2 class="font-display text-2xl font-bold text-white">Scheduled shows</h2>
+          <p class="mt-1 text-sm text-muted">Manage all upcoming show timings.</p>
+        </div>
+        <a href="/admin/add-shows" class="inline-flex items-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary-hover text-white text-sm font-medium rounded-lg transition-colors">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Add show
+        </a>
+      </div>
+
+      <% if (rows.length === 0) { %>
+        <div class="bg-card border border-border rounded-2xl p-12 text-center">
+          <p class="text-lg text-white">No shows scheduled yet.</p>
+          <a href="/admin/add-shows" class="mt-4 inline-block text-sm text-primary hover:underline">Add your first show</a>
+        </div>
+      <% } else { %>
+        <div class="bg-card border border-border rounded-2xl overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="text-left text-xs font-medium uppercase tracking-wider text-muted bg-surface/60">
+                  <th class="px-5 py-3">Movie</th>
+                  <th class="px-5 py-3">Show time</th>
+                  <th class="px-5 py-3">Price</th>
+                  <th class="px-5 py-3">Seats booked</th>
+                  <th class="px-5 py-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-border">
+                <% rows.forEach(row => { %>
+                  <tr class="show-row hover:bg-surface/40 transition-colors" data-show-id="<%= row._id %>">
+                    <td class="px-5 py-4">
+                      <p class="font-medium text-white"><%= row.movie %></p>
+                    </td>
+                    <td class="px-5 py-4 text-muted"><%= row.time %></td>
+                    <td class="px-5 py-4 font-medium text-white">₹<%= row.price %></td>
+                    <td class="px-5 py-4">
+                      <div class="flex items-center gap-3 w-40">
+                        <div class="flex-1 h-2 bg-surface rounded-full overflow-hidden">
+                          <div class="h-full bg-primary" style="width: <%= Math.min(100, (row.booked / 90) * 100) %>%"></div>
+                        </div>
+                        <span class="text-xs text-muted"><%= row.booked %>/90</span>
+                      </div>
+                    </td>
+                    <td class="px-5 py-4 text-right">
+                      <button
+                        class="delete-show-btn inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium bg-white/5 border border-border text-muted rounded-lg hover:text-red-400 hover:border-red-500/40 transition-colors"
+                        data-show-id="<%= row._id %>"
+                      >
+                        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/></svg>
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      <% } %>
+    </main>
+  </div>
+</div>
+
+<script>
+  (function () {
+    document.querySelectorAll('.delete-show-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Delete this show? All bookings for it will also be removed.')) return
+
+        const showId = btn.dataset.showId
+        btn.disabled = true
+        btn.textContent = 'Deleting...'
+
+        try {
+          const res = await fetch('/api/shows/' + showId, { method: 'DELETE' })
+          const data = await res.json()
+
+          if (res.ok && data.success) {
+            const row = btn.closest('.show-row')
+            row.style.opacity = '0'
+            row.style.transition = 'opacity 0.3s'
+            setTimeout(() => row.remove(), 300)
+          } else {
+            alert(data.error || 'Failed to delete.')
+            btn.disabled = false
+            btn.textContent = 'Delete'
+          }
+        } catch (err) {
+          alert('Network error.')
+          btn.disabled = false
+          btn.textContent = 'Delete'
+        }
+      })
+    })
+  })()
+</script>

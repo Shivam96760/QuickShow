@@ -93,7 +93,7 @@ router.get("/add-shows", async (req, res) => {
   }
 })
 
-// ---------- List Shows ----------
+//---------- List Shows ----------
 router.get("/list-shows", async (req, res) => {
   try {
     const shows = await Show.find()

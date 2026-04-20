@@ -6,7 +6,7 @@ import { isLoggedIn } from "../middleware/auth.js"
 
 const router = Router()
 
-// ---------- Home ----------
+//  ---------- Home ----------
 router.get("/", async (req, res) => {
   try {
     const rawMovies = await Movie.find().sort({ createdAt: -1 }).limit(8).lean()

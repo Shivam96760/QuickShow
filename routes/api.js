@@ -6,7 +6,7 @@ import Booking from "../models/Booking.js"
 
 const router = Router()
 
-// ========== BOOKINGS ==========
+//  ========== BOOKINGS ==========
 
 // POST /api/bookings — Create a new booking
 router.post("/bookings", isLoggedIn, async (req, res) => {

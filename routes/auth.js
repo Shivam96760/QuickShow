@@ -3,7 +3,7 @@ import User from "../models/User.js"
 
 const router = Router()
 
-// ---------- Register ----------
+//  ---------- Register ----------
 router.get("/register", (req, res) => {
   if (req.session?.user) return res.redirect("/")
   res.render("pages/register", {

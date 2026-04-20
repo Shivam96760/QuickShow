@@ -1,7 +1,7 @@
 // Authentication & authorization middleware
 
 export function setLocals(req, res, next) {
-  // Make current user available in all EJS views
+// Make current user available in all EJS views
   res.locals.currentUser = req.session?.user || null
   res.locals.currentPath = req.path
   res.locals.isAdmin = req.path.startsWith("/admin")

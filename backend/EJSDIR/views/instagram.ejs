@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Welcome to Instagram, <%= username %>!  </h1>
+    <button>Follow</button>
+    <button>messageS</button>
+    <h3>accounts that follow u:</h3>
+    <ul>
+        <% for (let user of followers){ %>
+            <li><%= user %></li>
+        <% } %>
+    </ul>
+</body>
+</html>

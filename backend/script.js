@@ -7,3 +7,4 @@
 // console.log(math.g);
 // console.log(math.pi );
 import {sum, multiply, g, pi} from "./math.js";
+import {sum, multiply, g, pi} from "./math.js";

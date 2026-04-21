@@ -19,7 +19,7 @@ const bookingSchema = new mongoose.Schema(
       required: true,
     },
     seats: [{ type: String, required: true }],
-    amount: { type: String, required: true },
+    amount: { type: Number, required: true },
     status: {
       type: String,
       enum: ["Confirmed", "Pending", "Cancelled"],
